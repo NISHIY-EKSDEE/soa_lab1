@@ -1,0 +1,13 @@
+.movie-form {
+    margin: 0 auto;
+    width: 40%;
+}
+
+.movie-form p {
+    text-align: initial;
+}
+
+.movie-form h2 {
+    text-align: center;
+    margin-top: 20px;
+}
