@@ -22,6 +22,12 @@
         <li class="nav-item">
             <a class="nav-link ${param.group}" href="/lab1/pages/movie-names-groups">Get movie names groups</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link ${param.group}" href="/lab1/movies/count_oscars_count_less/99">Count oscars less</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link ${param.group}" href="/lab1/movies/get_by_name_start/value">Get by name start</a>
+        </li>
     </ul>
 </nav>
 </body>

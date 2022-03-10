@@ -33,7 +33,7 @@ public class JaxbPerson {
 
     @NotNull
     @XmlElement
-    private JaxbLocation location = new JaxbLocation(0L, 0F, 0f, "Hollywood"); //Поле не может быть null
+    private JaxbLocation location; //Поле не может быть null
 
     public Person toHuman() {
         return new Person(0, name, birthday, location.toLocation());

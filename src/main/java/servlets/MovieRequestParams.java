@@ -76,7 +76,13 @@ public class MovieRequestParams {
         this.directorName = directorName;
         this.directorBirthdayDate = directorBirthdayDate;
         this.selectedPage = validateInteger(selectedPage, 1);
+        if (this.selectedPage <= 0) {
+            this.errorList.add(new Error("selectedPage", "selectedPage incorrect value"));
+        }
         this.limit = validateInteger(limit, 5);
+        if (this.limit <= 0) {
+            this.errorList.add(new Error("limit", "limit incorrect value"));
+        }
 
         if (errorList.size() > 0) {
             throw new ValidateFieldsException(this.errorList);

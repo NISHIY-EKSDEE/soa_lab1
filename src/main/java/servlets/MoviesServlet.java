@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
 
 
 @WebServlet("/movies/*")
@@ -77,21 +76,39 @@ public class MoviesServlet extends HttpServlet {
                 MovieRequestParams filterParams = getFilterParams(request);
                 movieService.getAllMovies(request, response, filterParams);
             } else {
-                String[] servletPath = pathInfo.split("/");
-                if (servletPath.length > 1) {
-                    try {
-                        Integer id = Integer.valueOf(servletPath[1]);
-                        movieService.getMovieById(request, response, id);
-                    } catch (NumberFormatException e) {
-                        request.setAttribute("msg", "Id must be an integer");
-                        response.setStatus(400);
+                String[] parts = pathInfo.split("/");
+                if (parts.length > 1) {
+                    switch (parts[1]) {
+                        // http://localhost:45857/lab1/movies/count_oscars_count_less/value
+                        case "count_oscars_count_less":
+                            try {
+                                Integer value = Integer.valueOf(parts[2]);
+                                movieService.countOscarsCountLess(value, request, response);
+                            } catch (NumberFormatException e) {
+                                request.setAttribute("msg", "Value must be an integer");
+                                response.setStatus(400);
+                            }
+                            break;
+                        // http://localhost:45857/lab1/movies/get_by_name_start/value
+                        case "get_by_name_start":
+                            movieService.getByNameStart(parts[2], request, response);
+                            break;
+                        default:
+                            try {
+                                Integer id = Integer.valueOf(parts[1]);
+                                movieService.getMovieById(request, response, id);
+                            } catch (NumberFormatException e) {
+                                request.setAttribute("msg", "Id must be an integer");
+                                response.setStatus(400);
+                            }
+                            break;
                     }
                 }
             }
         } catch (ValidateFieldsException ex) {
             movieService.sendErrorList(request, response, ex);
         } catch (Exception ex) {
-            throw new ServletException(ex);
+            response.setStatus(400);
         }
     }
 

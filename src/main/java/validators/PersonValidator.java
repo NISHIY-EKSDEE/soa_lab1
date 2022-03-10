@@ -24,6 +24,9 @@ public class PersonValidator {
                 errorList.add(new Error(f.getName(), String.format("Person %s is not specified", f.getName())));
             }
         }
+        if (person.getName() != null && person.getName().equals("")) {
+            errorList.add(new Error("Person name", "Person name is blank"));
+        }
         errorList.addAll(locationValidator.validate(person.getLocation()));
 
         return errorList;

@@ -9,6 +9,7 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 import servlets.MovieRequestParams;
 import util.Jaxb;
+import util.ServerResponse;
 import validators.MovieValidator;
 import validators.QueryMapValidator;
 import validators.ValidateFieldsException;
@@ -47,7 +48,7 @@ public class MovieService {
         } catch (ValidateFieldsException ex) {
             sendErrorList(request, response, ex);
         } catch (IllegalAccessException | JAXBException e) {
-            e.printStackTrace();
+            response.setStatus(400);
         }
     }
 
@@ -69,7 +70,7 @@ public class MovieService {
         } catch (ValidateFieldsException ex) {
             sendErrorList(request, response, ex);
         } catch (IllegalAccessException | JAXBException e) {
-            e.printStackTrace();
+            response.setStatus(400);
         }
     }
 
@@ -91,8 +92,35 @@ public class MovieService {
     }
 
     public void getAllMovies(HttpServletRequest request, HttpServletResponse response, MovieRequestParams filterParams) throws ServletException, IOException, Exception {
-        PaginationResult movies = movieDao.getFilteredMovies(filterParams);
-        sendMovies(request, response, movies);
+        try {
+            PaginationResult movies = movieDao.getFilteredMovies(filterParams);
+            sendMovies(request, response, movies);
+        } catch (Exception e) {
+            response.setStatus(400);
+        }
+
+    }
+
+    public void countOscarsCountLess(int value, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Long count = movieDao.countOscarsCountLess(value);
+            if (count != null){
+                sendMessage(request, response, count.toString());
+            } else {
+                response.setStatus(500);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void getByNameStart(String value, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            PaginationResult movies = movieDao.getByNameStart(value);
+            sendMovies(request, response, movies);
+        } catch (Exception e){
+            response.setStatus(400);
+        }
     }
 
     public void sendErrorList(HttpServletRequest request, HttpServletResponse response, ValidateFieldsException ex) {
@@ -102,6 +130,22 @@ public class MovieService {
         Serializer serializer = new Persister();
         try {
             serializer.write(errorsList, writer);
+            String xml = writer.toString();
+            response.getWriter().print(xml);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendMessage(HttpServletRequest request, HttpServletResponse response, String message) {
+        ServerResponse serverResponse = new ServerResponse(message);
+        response.setContentType("text/xml");
+        response.setCharacterEncoding("UTF-8");
+        response.setStatus(200);
+        Writer writer = new StringWriter();
+        Serializer serializer = new Persister();
+        try {
+            serializer.write(serverResponse, writer);
             String xml = writer.toString();
             response.getWriter().print(xml);
         } catch (Exception e) {

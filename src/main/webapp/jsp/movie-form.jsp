@@ -64,6 +64,10 @@
 
             <p>Director: </p>
             <p>Name: <input type="text" name="director-name" value="<c:out value='${movie.director.name}'/>" class="form-control"/></p>
+            <p>Location name: <input type="text" name="director-location-name" value="<c:out value='${movie.director.location.name}'/>" class="form-control"/></p>
+            <p>Location X: <input type="text" name="director-location-x" value="<c:out value='${movie.director.location.x}'/>" class="form-control"/></p>
+            <p>Location Y: <input type="text" name="director-location-y" value="<c:out value='${movie.director.location.y}'/>" class="form-control"/></p>
+            <p>Location Z: <input type="text" name="director-location-z" value="<c:out value='${movie.director.location.z}'/>" class="form-control"/></p>
             <p>Birthday:</p>
             <p>Date: <input type="date" name="birthday-date" value='${movie.director.birthday.format( DateTimeFormatter.ofPattern("yyyy-MM-dd"))}' class="form-control"></p>
             <p>Time: <input type="time" name="birthday-time"

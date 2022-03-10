@@ -15,6 +15,12 @@ function createMovie() {
         '         <genre>' + formData.get('genre') + '</genre>' +
         '         <director>' +
         '            <name>' + formData.get('director-name') + '</name>' +
+        '            <location>' +
+        '               <name>' + formData.get('director-location-name') + '</name>' +
+        '               <x>' + formData.get('director-location-x') + '</x>' +
+        '               <y>' + formData.get('director-location-y') + '</y>' +
+        '               <z>' + formData.get('director-location-z') + '</z>' +
+        '            </location>' +
         '            <birthday>' + formData.get('birthday-date') + "T" + formData.get('birthday-time') + ":00.000" + '</birthday>' +
         '         </director>' +
         '      </movie>'

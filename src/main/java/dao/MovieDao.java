@@ -10,6 +10,7 @@ import org.hibernate.query.Query;
 import servlets.MovieRequestParams;
 import util.HibernateUtil;
 
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.*;
 
@@ -97,7 +98,55 @@ public class MovieDao {
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
+            throw e;
+        }
+        return res;
+    }
+
+    public long countOscarsCountLess(int value) {
+        Transaction transaction = null;
+        long count;
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<Movie> cr = cb.createQuery(Movie.class);
+            Root<Movie> root = cr.from(Movie.class);
+
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(cb.lessThan(root.get("oscarsCount"), value));
+
+            CriteriaQuery<Movie> query = cr.select(root).where(predicates.toArray(new Predicate[]{}));
+            TypedQuery<Movie> typedQuery = session.createQuery(query);
+            count = typedQuery.getResultList().size();
+
+        } catch (Exception e){
+            if (transaction != null) transaction.rollback();
+            throw e;
+        }
+        return count;
+    }
+
+    public PaginationResult getByNameStart(String value) {
+        Transaction transaction = null;
+        PaginationResult res;
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<Movie> cr = cb.createQuery(Movie.class);
+            Root<Movie> root = cr.from(Movie.class);
+
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(cb.like(root.get("name"), value + "%"));
+
+            CriteriaQuery<Movie> query = cr.select(root).where(predicates.toArray(new Predicate[]{}));
+            TypedQuery<Movie> typedQuery = session.createQuery(query);
+
+            List<Movie> list = typedQuery.getResultList();
+            res = new PaginationResult(0, 0, list.size(), list);
+
+        } catch (Exception e){
+            if (transaction != null) transaction.rollback();
+            throw e;
         }
         return res;
     }
